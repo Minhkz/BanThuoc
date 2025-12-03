@@ -230,12 +230,19 @@
         </div>
 
         <div class="mt-auto pt-3">
-            <div class="sidebar-section-title">Hệ thống</div>
-            <a class="sidebar-link text-danger" href="#">
-                <i class="bi bi-box-arrow-right"></i>
-                Đăng xuất
-            </a>
-        </div>
+    <div class="sidebar-section-title">Hệ thống</div>
+
+    <!-- Đăng xuất (click link -> submit form POST) -->
+    <a class="sidebar-link text-danger" href="#" 
+       onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+        <i class="bi bi-box-arrow-right"></i>
+        Đăng xuất
+    </a>
+
+    <form id="logoutForm" action="/logout" method="post" style="display:none;">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    </form>
+</div>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -412,7 +419,9 @@
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
 
                 <form id="deleteForm" method="post">
-                    <!-- action sẽ được thay động -->
+                    <input type="hidden"
+                           name="${_csrf.parameterName}"
+                           value="${_csrf.token}" />
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </form>
             </div>
