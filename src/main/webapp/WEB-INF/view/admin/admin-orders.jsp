@@ -270,20 +270,19 @@
                 </button>
 
                 <div class="fw-semibold" style="font-size:.95rem;">
-                    Đơn hàng
+                    Người dùng
                 </div>
                 <span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold">
-                    Quản lý bán hàng
+                    Khách hàng & Quản trị viên
                 </span>
             </div>
 
             <div class="d-flex align-items-center gap-3">
                 <div class="text-end d-none d-sm-block">
-                    <div class="fw-semibold" style="font-size:.9rem;">Dược sĩ Linh</div>
-                    <div class="text-muted" style="font-size:.8rem;">Quản lý kho</div>
+                    <div class="fw-semibold" style="font-size:.9rem;">${sessionScope.fullName}</div>
                 </div>
                 <img
-                    src="https://i.pravatar.cc/48?img=14"
+                    src="/uploads/user/${sessionScope.avatar}"
                     class="rounded-circle border"
                     style="width:40px;height:40px;object-fit:cover;"
                     alt="user avatar"

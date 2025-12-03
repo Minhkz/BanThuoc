@@ -159,44 +159,6 @@
 </head>
 <body>
 
-<!-- OFFCANVAS (mobile menu) -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="adminMenuOffcanvas">
-    <div class="offcanvas-header">
-        <div>
-            <div class="sidebar-brand-badge mb-2">
-                <i class="bi bi-capsule"></i>
-                <span>MediFresh</span>
-            </div>
-            <div class="sidebar-brand-text">Bảng điều khiển</div>
-        </div>
-        <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" aria-label="Đóng"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div class="sidebar-section-title">Quản lý</div>
-        <a class="sidebar-link" href="/admin">
-            <i class="bi bi-speedometer2"></i>
-            Dashboard
-        </a>
-        <a class="sidebar-link" href="/admin/products">
-            <i class="bi bi-box-seam"></i>
-            Sản phẩm
-        </a>
-        <a class="sidebar-link" href="/admin/orders">
-            <i class="bi bi-receipt"></i>
-            Đơn hàng
-        </a>
-        <a class="sidebar-link active" href="admin-users.html">
-            <i class="bi bi-people"></i>
-            Người dùng
-        </a>
-
-        <div class="sidebar-section-title">Hệ thống</div>
-        <a class="sidebar-link text-danger" href="#">
-            <i class="bi bi-box-arrow-right"></i>
-            Đăng xuất
-        </a>
-    </div>
-</div>
 
 <div class="d-flex">
     <!-- SIDEBAR (desktop) -->
@@ -269,11 +231,10 @@
 
             <div class="d-flex align-items-center gap-3">
                 <div class="text-end d-none d-sm-block">
-                    <div class="fw-semibold" style="font-size:.9rem;">Dược sĩ Linh</div>
-                    <div class="text-muted" style="font-size:.8rem;">Quản lý kho</div>
+                    <div class="fw-semibold" style="font-size:.9rem;">${sessionScope.fullName}</div>
                 </div>
                 <img
-                    src="https://i.pravatar.cc/48?img=14"
+                    src="/uploads/user/${sessionScope.avatar}"
                     class="rounded-circle border"
                     style="width:40px;height:40px;object-fit:cover;"
                     alt="user avatar"

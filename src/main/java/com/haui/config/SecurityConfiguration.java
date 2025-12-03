@@ -20,89 +20,93 @@ import jakarta.servlet.DispatcherType;
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return new CustomUserDetailsService(userService);
-    }
+        @Bean
+        public UserDetailsService userDetailsService(UserService userService) {
+                return new CustomUserDetailsService(userService);
+        }
 
-    @Bean
-    public SpringSessionRememberMeServices rememberMeServices() {
-        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
-        rememberMeServices.setAlwaysRemember(true);
-        rememberMeServices.setValiditySeconds(7 * 24 * 60 * 60);
-        return rememberMeServices;
-    }
+        @Bean
+        public SpringSessionRememberMeServices rememberMeServices() {
+                SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+                rememberMeServices.setAlwaysRemember(true);
+                rememberMeServices.setValiditySeconds(7 * 24 * 60 * 60);
+                return rememberMeServices;
+        }
 
-    @Bean
-    public CustomSuccessHandler customSuccessHandler() {
-        return new CustomSuccessHandler();
-    }
+        @Bean
+        public CustomSuccessHandler customSuccessHandler() {
+                return new CustomSuccessHandler();
+        }
 
-    @Bean
-    public DaoAuthenticationProvider authProvider(
-            PasswordEncoder passwordEncoder,
-            UserDetailsService userDetailsService) {
+        @Bean
+        public DaoAuthenticationProvider authProvider(
+                        PasswordEncoder passwordEncoder,
+                        UserDetailsService userDetailsService) {
 
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        authProvider.setHideUserNotFoundExceptions(false);
+                DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+                authProvider.setUserDetailsService(userDetailsService);
+                authProvider.setPasswordEncoder(passwordEncoder);
+                authProvider.setHideUserNotFoundExceptions(false);
 
-        return authProvider;
-    }
+                return authProvider;
+        }
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http,
-            UserService userService,
-            CustomUserDetailsService customUserDetailsService,
-            CustomRememberMeSuccessHandler rememberMeSuccessHandler) throws Exception {
+        @Bean
+        SecurityFilterChain filterChain(HttpSecurity http,
+                        UserService userService,
+                        CustomUserDetailsService customUserDetailsService,
+                        CustomRememberMeSuccessHandler rememberMeSuccessHandler) throws Exception {
 
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE).permitAll()
+                http
+                                .authorizeHttpRequests(auth -> auth
+                                                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
+                                                .permitAll()
 
-                        .requestMatchers(
-                                "/client/**", "/css/**", "/js/**", "/images/**", "/assets/**", "/webjars/**")
-                        .permitAll()
+                                                .requestMatchers(
+                                                                "/client/**", "/css/**", "/js/**", "/images/**",
+                                                                "/assets/**", "/webjars/**")
+                                                .permitAll()
 
-                        .requestMatchers("/", "/category/**", "/login", "/register", "/error", "/error/**")
-                        .permitAll()
+                                                .requestMatchers("/", "/category/**", "/login/**", "/register/**",
+                                                                "/error", "/error/**")
+                                                .permitAll()
 
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated())
+                                                .anyRequest().authenticated())
 
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .failureUrl("/login?error")
-                        .successHandler(customSuccessHandler())
-                        .permitAll())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/login")
+                                                .failureUrl("/login?error")
+                                                .successHandler(customSuccessHandler())
+                                                .permitAll())
 
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID"))
 
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                        .invalidSessionUrl("/login?expired")
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false))
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                                                .invalidSessionUrl("/login?expired")
+                                                .maximumSessions(1)
+                                                .maxSessionsPreventsLogin(false))
 
-                .rememberMe(rm -> rm
-                        .rememberMeServices(rememberMeServices()))
+                                .rememberMe(rm -> rm
+                                                .rememberMeServices(rememberMeServices()))
 
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/client/**", "/css/**", "/js/**", "/images/**", "/assets/**"));
+                                .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/client/**", "/css/**", "/js/**",
+                                                                "/images/**", "/assets/**"));
 
-        return http.build();
-    }
+                return http.build();
+        }
 
 }
