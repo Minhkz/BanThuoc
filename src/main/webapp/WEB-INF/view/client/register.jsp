@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -44,21 +46,7 @@
                     <a class="nav-link fw-semibold" href="/category">Danh mục</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/login">Đăng nhập</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link fw-semibold active" href="/register">Đăng ký</a>
-                </li>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
-                        <i class="bi bi-bag-check-fill me-1"></i>
-                        Giỏ hàng
-                        <span
-                            id="cart-count"
-                            class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
-                            style="font-size:.7rem;min-width:1.5rem"
-                        >0</span>
-                    </a>
                 </li>
             </ul>
         </div>
@@ -112,97 +100,112 @@
                     </div>
                 </div>
 
-                <form onsubmit="handleRegister(event)">
-                    <div class="mb-3">
-                        <label class="form-label">Họ và tên</label>
-                        <input
-                            type="text"
-                            class="form-control form-control-lg"
-                            id="reg-fullname"
-                            placeholder="VD: Nguyễn Văn A"
-                            required
-                        >
-                    </div>
+                <form:form action="/register/create" method="post" modelAttribute="register">
 
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input
-                            type="email"
-                            class="form-control form-control-lg"
-                            id="reg-email"
-                            placeholder="you@example.com"
-                            required
-                        >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Số điện thoại</label>
-                        <input
-                            type="tel"
-                            class="form-control form-control-lg"
-                            id="reg-phone"
-                            placeholder="09xxxxxxxx"
-                            required
-                        >
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Mật khẩu</label>
-                        <div class="input-group input-group-lg">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="reg-password"
-                                placeholder="Tối thiểu 8 ký tự"
-                                minlength="8"
-                                required
-                            >
-                            <span class="input-group-text bg-white toggle-password-btn" onclick="togglePassword('reg-password', this)">
-                                <i class="bi bi-eye-slash"></i>
-                            </span>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <form:input
+                                    path="username"
+                                    type="text"
+                                    class="form-control form-control-lg"
+                                    id="reg-username"
+                                    placeholder="VD: NguyenVanA"
+                                    required="required" />
+                            <form:errors path="username" cssClass="text-danger small" />
                         </div>
-                        <div class="form-text small text-muted">
-                            Gợi ý: dùng ít nhất 1 chữ hoa, 1 số, 1 ký tự đặc biệt.
+
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <form:input
+                                    path="fullName"
+                                    type="text"
+                                    class="form-control form-control-lg"
+                                    id="reg-fullname"
+                                    placeholder="VD: Nguyễn Văn A"
+                                    required="required" />
+                            <form:errors path="fullName" cssClass="text-danger small" />
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Nhập lại mật khẩu</label>
-                        <div class="input-group input-group-lg">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="reg-password-confirm"
-                                placeholder="Nhập lại để xác nhận"
-                                minlength="8"
-                                required
-                            >
-                            <span class="input-group-text bg-white toggle-password-btn" onclick="togglePassword('reg-password-confirm', this)">
-                                <i class="bi bi-eye-slash"></i>
-                            </span>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <form:input
+                                    path="email"
+                                    type="email"
+                                    class="form-control form-control-lg"
+                                    id="reg-email"
+                                    placeholder="you@example.com"
+                                    required="required" />
+                            <form:errors path="email" cssClass="text-danger small" />
                         </div>
-                    </div>
 
-                    <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" value="" id="agreeTerms" required>
-                        <label class="form-check-label small" for="agreeTerms">
-                            Tôi đồng ý với
-                            <a href="#" class="text-decoration-none">Điều khoản sử dụng</a>
-                            và
-                            <a href="#" class="text-decoration-none">Chính sách bảo mật</a>.
-                        </label>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <form:input
+                                    path="phone"
+                                    type="tel"
+                                    class="form-control form-control-lg"
+                                    id="reg-phone"
+                                    placeholder="09xxxxxxxx"
+                                    required="required" />
+                            <form:errors path="phone" cssClass="text-danger small" />
+                        </div>
 
-                    <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold rounded-pill">
-                        <i class="bi bi-person-plus me-1"></i>
-                        Tạo tài khoản
-                    </button>
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ</label>
+                            <form:input
+                                    path="address"
+                                    type="text"
+                                    class="form-control form-control-lg"
+                                    id="reg-address"
+                                    placeholder="VD: Haui"
+                                    required="required" />
+                            <form:errors path="address" cssClass="text-danger small" />
+                        </div>
 
-                    <div class="text-center mt-4 small text-muted">
-                        Thông tin của bạn được bảo mật.  
-                        Chúng tôi không chia sẻ số điện thoại cho bên thứ ba.
-                    </div>
-                </form>
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <div class="input-group input-group-lg">
+                                <form:password
+                                        path="password"
+                                        class="form-control"
+                                        id="reg-password"
+                                        placeholder="Tối thiểu 6 ký tự"
+                                        minlength="6"
+                                        required="required" />
+                                <span class="input-group-text bg-white toggle-password-btn"
+                                    onclick="togglePassword('reg-password', this)">
+                                    <i class="bi bi-eye-slash"></i>
+                                </span>
+                            </div>
+                            <form:errors path="password" cssClass="text-danger small" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nhập lại mật khẩu</label>
+                            <div class="input-group input-group-lg">
+                                <form:password
+                                        path="confirmPassword"
+                                        class="form-control"
+                                        id="reg-password-confirm"
+                                        placeholder="Nhập lại để xác nhận"
+                                        minlength="6"
+                                        required="required" />
+                                <span class="input-group-text bg-white toggle-password-btn"
+                                    onclick="togglePassword('reg-password-confirm', this)">
+                                    <i class="bi bi-eye-slash"></i>
+                                </span>
+                            </div>
+                            <form:errors path="confirmPassword" cssClass="text-danger small" />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold rounded-pill">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Tạo tài khoản
+                        </button>
+
+                    </form:form>
+
+
             </div>
         </div>
     </div>

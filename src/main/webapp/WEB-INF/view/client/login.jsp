@@ -49,17 +49,6 @@
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="/register">Đăng ký</a>
                 </li>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
-                        <i class="bi bi-bag-check-fill me-1"></i>
-                        Giỏ hàng
-                        <span
-                            id="cart-count"
-                            class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
-                            style="font-size:.7rem;min-width:1.5rem"
-                        >0</span>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -112,13 +101,14 @@
                     </div>
                 </div>
 
-                <form onsubmit="handleLogin(event)">
+                <form method="post" action="/login">
                     <div class="mb-3">
                         <label class="form-label">Email hoặc SĐT</label>
                         <input
                             type="text"
                             class="form-control form-control-lg"
                             id="login-identifier"
+                            name="username"
                             placeholder="vd: user@gmail.com / 0901xxxxxx"
                             required
                         >
@@ -135,34 +125,34 @@
                                 type="password"
                                 class="form-control"
                                 id="login-password"
+                                name="password"
                                 placeholder="••••••••"
                                 required
                             >
-                            <span class="input-group-text bg-white toggle-password-btn" onclick="togglePassword('login-password', this)">
+                            <span class="input-group-text bg-white toggle-password-btn"
+                                onclick="togglePassword('login-password', this)">
                                 <i class="bi bi-eye-slash"></i>
                             </span>
                         </div>
                     </div>
 
+                    <!-- Remember me -->
                     <div class="form-check my-3">
-                        <input class="form-check-input" type="checkbox" value="" id="rememberMe" checked>
+                        <input class="form-check-input" type="checkbox" name="remember-me" id="rememberMe" checked>
                         <label class="form-check-label small" for="rememberMe">
                             Ghi nhớ đăng nhập trên thiết bị này
                         </label>
                     </div>
 
+                    <!-- CSRF TOKEN -->
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
                     <button type="submit" class="btn btn-primary w-100 btn-lg fw-semibold rounded-pill">
                         <i class="bi bi-door-open me-1"></i>
                         Đăng nhập
                     </button>
-
-                    <div class="text-center mt-4 small text-muted">
-                        Bằng cách đăng nhập, bạn đồng ý với
-                        <a href="#" class="text-decoration-none">Điều khoản sử dụng</a>
-                        &amp;
-                        <a href="#" class="text-decoration-none">Chính sách bảo mật</a>.
-                    </div>
                 </form>
+
             </div>
         </div>
     </div>

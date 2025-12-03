@@ -240,11 +240,20 @@
             Người dùng
         </a>
 
-        <div class="sidebar-section-title">Hệ thống</div>
-        <a class="sidebar-link text-danger" href="#">
-            <i class="bi bi-box-arrow-right"></i>
-            Đăng xuất
-        </a>
+        <div class="mt-auto pt-3">
+    <div class="sidebar-section-title">Hệ thống</div>
+
+    <!-- Đăng xuất (click link -> submit form POST) -->
+    <a class="sidebar-link text-danger" href="#" 
+       onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+        <i class="bi bi-box-arrow-right"></i>
+        Đăng xuất
+    </a>
+
+    <form id="logoutForm" action="/logout" method="post" style="display:none;">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    </form>
+</div>
     </div>
 </div>
 
@@ -280,12 +289,19 @@
         </div>
 
         <div class="mt-auto pt-3">
-            <div class="sidebar-section-title">Hệ thống</div>
-            <a class="sidebar-link text-danger" href="#">
-                <i class="bi bi-box-arrow-right"></i>
-                Đăng xuất
-            </a>
-        </div>
+    <div class="sidebar-section-title">Hệ thống</div>
+
+    <!-- Đăng xuất (click link -> submit form POST) -->
+    <a class="sidebar-link text-danger" href="#" 
+       onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+        <i class="bi bi-box-arrow-right"></i>
+        Đăng xuất
+    </a>
+
+    <form id="logoutForm" action="/logout" method="post" style="display:none;">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    </form>
+</div>
     </aside>
 
     <!-- MAIN CONTENT -->
