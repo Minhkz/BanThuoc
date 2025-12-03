@@ -1,0 +1,128 @@
+:root {
+    --brand-start: #0d6efd;
+    --brand-end: #6f42c1;
+}
+
+body {
+    background-color: #f5f7fa;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: #ffffffcc;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--brand-start), var(--brand-end));
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 600;
+    border-radius: .75rem;
+    padding: .4rem .6rem;
+    line-height: 1;
+}
+
+/* AUTH LAYOUT */
+.auth-card {
+    background: #fff;
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 0, 0, .05);
+    box-shadow: 0 1.25rem 2.5rem rgba(0, 0, 0, .07);
+    padding: 2rem 1.5rem;
+    max-width: 400px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #212529;
+}
+
+.auth-desc {
+    font-size: .9rem;
+    color: #6c757d;
+}
+
+.form-label {
+    font-size: .85rem;
+    font-weight: 500;
+    color: #343a40;
+}
+
+.gradient-panel {
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .25) 0%, rgba(255, 255, 255, 0) 60%),
+        linear-gradient(135deg, var(--brand-start) 0%, var(--brand-end) 100%);
+    border-radius: 1rem;
+    color: #fff;
+    padding: 2rem;
+    box-shadow: 0 1.25rem 2.5rem rgba(13, 110, 253, .3);
+    position: relative;
+    overflow: hidden;
+}
+
+.gradient-panel::after {
+    content: "";
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, .12);
+    filter: blur(40px);
+    border-radius: 50%;
+    right: -60px;
+    bottom: -60px;
+}
+
+.panel-heading {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.panel-desc {
+    font-size: .9rem;
+    color: rgba(255, 255, 255, .9);
+}
+
+.panel-bullet {
+    font-size: .85rem;
+    color: rgba(255, 255, 255, .9);
+}
+
+.panel-bullet i {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .2);
+    border-radius: .5rem;
+    font-size: .8rem;
+    padding: .4rem .5rem;
+    margin-right: .5rem;
+}
+
+.toggle-password-btn {
+    cursor: pointer;
+}
+
+.site-footer {
+    font-size: .8rem;
+    color: #6c757d;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, .05);
+}

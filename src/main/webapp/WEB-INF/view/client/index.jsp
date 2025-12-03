@@ -23,7 +23,7 @@
 <!-- ========== NAVBAR ========== -->
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container py-2">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <span class="brand-badge">
                 <i class="bi bi-capsule"></i>
             </span>
@@ -37,19 +37,19 @@
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold active" href="#">Trang chủ</a>
+                    <a class="nav-link fw-semibold active" href="/">Trang chủ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="#">Danh mục</a>
+                    <a class="nav-link fw-semibold" href="/category">Danh mục</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="#">Đăng nhập</a>
+                    <a class="nav-link fw-semibold" href="/login">Đăng nhập</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="#">Đăng ký</a>
+                    <a class="nav-link fw-semibold" href="/register">Đăng ký</a>
                 </li>
                 <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-primary rounded-pill position-relative" href="cart.html">
+                    <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
                         <i class="bi bi-bag-check-fill me-1"></i>
                         Giỏ hàng
                         <span
