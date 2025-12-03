@@ -54,6 +54,7 @@ public class IndexController {
 
     @PostMapping("/register/create")
     public String createAccount(@ModelAttribute("register") UserDto userDto) {
+        System.out.println(">>>>>Check user:" + userDto);
         User user = new User();
         String hashPassword = this.passwordEncoder.encode(userDto.getPassword());
         user.setUsername(userDto.getUsername());

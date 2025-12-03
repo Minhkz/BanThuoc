@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -37,29 +38,49 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/">Trang chủ</a>
+                    <a class="nav-link fw-semibold active" href="/">Trang chủ</a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold active" href="/category">Danh mục</a>
+                    <a class="nav-link fw-semibold" href="/category">Danh mục</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/login">Đăng nhập</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="/register">Đăng ký</a>
-                </li>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
-                        <i class="bi bi-bag-check-fill me-1"></i>
-                        Giỏ hàng
-                        <span
-                            id="cart-count"
-                            class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
-                            style="font-size:.7rem;min-width:1.5rem"
-                        >0</span>
-                    </a>
-                </li>
+
+                <!-- Giỏ hàng chỉ hiện khi đã login -->
+                <c:if test="${not empty pageContext.request.userPrincipal}">
+                    <li class="nav-item">
+                        <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
+                            <i class="bi bi-bag-check-fill me-1"></i>
+                            Giỏ hàng
+                            <span id="cart-count"
+                                class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
+                                style="font-size:.7rem;min-width:1.5rem">0</span>
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Nếu chưa login: nút Đăng nhập -->
+                <c:if test="${empty pageContext.request.userPrincipal}">
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary rounded-pill fw-semibold" href="/login">
+                            <i class="bi bi-person me-1"></i> Đăng nhập
+                        </a>
+                    </li>
+                </c:if>
+
+                <!-- Nếu đã login: nút Đăng xuất -->
+                <c:if test="${not empty pageContext.request.userPrincipal}">
+                    <li class="nav-item ms-lg-2">
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                            <button class="btn btn-danger rounded-pill fw-semibold">
+                                <i class="bi bi-box-arrow-right me-1"></i> Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </c:if>
+
             </ul>
         </div>
     </div>
