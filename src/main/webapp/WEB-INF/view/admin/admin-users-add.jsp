@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -17,7 +18,18 @@
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
     />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            const avatarFile = $("#avatarFile");
+            avatarFile.change(function (e) {
+                const imgURL = URL.createObjectURL(e.target.files[0]);
+                $("#avatarPreview").attr("src", imgURL);
+                $("#avatarPreview").css({ "display": "block" });
+            });
+        });
+    </script>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <style>
         :root {
             --brand-start: #0d6efd;
@@ -156,6 +168,7 @@
             color:#dc3545;
         }
     </style>
+
 </head>
 <body>
 
@@ -173,19 +186,19 @@
     </div>
     <div class="offcanvas-body">
         <div class="sidebar-section-title">Quản lý</div>
-        <a class="sidebar-link" href="/admin">
+        <a class="sidebar-link" href="admin-dashboard.html">
             <i class="bi bi-speedometer2"></i>
             Dashboard
         </a>
-        <a class="sidebar-link" href="/admin/products">
+        <a class="sidebar-link" href="admin-products.html">
             <i class="bi bi-box-seam"></i>
             Sản phẩm
         </a>
-        <a class="sidebar-link" href="/admin/orders">
+        <a class="sidebar-link" href="admin-orders.html">
             <i class="bi bi-receipt"></i>
             Đơn hàng
         </a>
-        <a class="sidebar-link active" href="admin-users.html">
+        <a class="sidebar-link active" href="/admin/users">
             <i class="bi bi-people"></i>
             Người dùng
         </a>
@@ -211,15 +224,15 @@
 
         <div>
             <div class="sidebar-section-title">Quản lý</div>
-            <a class="sidebar-link" href="/admin">
+            <a class="sidebar-link" href="admin-dashboard.html">
                 <i class="bi bi-speedometer2"></i>
                 Dashboard
             </a>
-            <a class="sidebar-link" href="/admin/products">
+            <a class="sidebar-link" href="admin-products.html">
                 <i class="bi bi-box-seam"></i>
                 Sản phẩm
             </a>
-            <a class="sidebar-link" href="/admin/orders">
+            <a class="sidebar-link" href="admin-orders.html">
                 <i class="bi bi-receipt"></i>
                 Đơn hàng
             </a>
@@ -256,7 +269,7 @@
                     Người dùng
                 </div>
                 <span class="badge bg-primary-subtle text-primary rounded-pill fw-semibold">
-                    Khách hàng & Quản trị viên
+                    Khách hàng & Nhân sự
                 </span>
             </div>
 
@@ -274,167 +287,94 @@
             </div>
         </div>
 
-        <!-- Header strip -->
-        <section class="container-fluid px-3 px-lg-4">
-            <div class="page-header-strip p-4 mb-4">
-                <div class="row g-3 align-items-center text-white">
-                    <div class="col-md-8">
-                        <div class="page-header-title mb-1">
-                            Quản lý người dùng
+        <div class="container-fluid px-6 px-lg-8 mb-5">
+            <div class="mt-5">
+                    <div class="row">
+                        <div class="col-md-6 col-12 mx-auto">
+                            <h3>Create a user</h3>
+                            <hr />
+                            <form:form method="post" action="/admin/users/create"
+                                       modelAttribute="newUser" class="row" enctype="multipart/form-data">
+                                <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="usernameError">
+                                        <form:errors path="username" cssClass="invalid-feedback"/>
+                                    </c:set>
+                                    <label class="form-label">Username:</label>
+                                    <form:input type="text" class="form-control ${not empty usernameError?'is-invalid':''}" path="username" />
+                                    ${usernameError}
+                                </div>
+
+                                <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="emailError">
+                                        <form:errors path="email" cssClass="invalid-feedback"/>
+                                    </c:set>
+                                    <label class="form-label">Email:</label>
+                                    <form:input type="email" class="form-control ${not empty emailError?'is-invalid':''}" path="email" />
+                                    ${emailError}
+                                </div>
+                                <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="errorPassword">
+                                        <form:errors path="password" cssClass="invalid-feedback"/>
+                                    </c:set>
+                                    <label class="form-label">Password:</label>
+                                    <form:input type="password" class="form-control ${not empty errorPassword?'is-invalid':''}" path="password" />
+                                    ${errorPassword}
+                                </div>
+                                <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="phoneError">
+                                        <form:errors path="phone" cssClass="invalid-feedback"/>
+                                    </c:set>
+                                    <label class="form-label">Phone number:</label>
+                                    <form:input type="text" class="form-control ${not empty phoneError?'is-invalid':''}" path="phone" />
+                                    ${phoneError}
+                                </div>
+                                <div class="mb-3 col-12 col-md-6">
+                                    <c:set var="fullError">
+                                        <form:errors path="fullName" cssClass="invalid-feedback"/>
+                                    </c:set>
+                                    <label class="form-label">Full Name:</label>
+                                    <form:input type="text" class="form-control ${not empty fullError?'is-invalid':''}" path="fullName" />
+                                    ${fullError}
+                                </div>
+                                <div class="mb-3 col-12 col-md-6">
+                                    <label class="form-label">Address:</label>
+                                    <form:input type="text" class="form-control" path="address" />
+                                </div>
+
+                                <div class="mb-3 col-12 col-md-6">
+                                    <label class="form-label">Role:</label>
+                                    <form:select class="form-select" path="role.id">
+                                        <form:option value="1">ADMIN</form:option>
+                                        <form:option value="2">USER</form:option>
+                                    </form:select>
+                                </div>
+                                <div class="mb-3 col-12 col-md-6">
+                                    <label for="avatarFile" class="form-label">Avatar:</label>
+                                    <input class="form-control" type="file" id="avatarFile"
+                                           accept=".png, .jpg, .jpeg" name="nhatminhFile">
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <img style="max-height: 250px; display: none;" alt="avatar preview"
+                                         id="avatarPreview" />
+                                </div>
+                                <div class="col-12 mb-5">
+                                    <button type="submit" class="btn btn-primary">Create</button>
+                                </div>
+                            </form:form>
+
                         </div>
-                        <div class="page-header-desc">
-                            Xem danh sách khách hàng và quyền hạn nhân viên.
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <form action="/admin/users/add" method="get">
-                            <button class="btn btn-light fw-semibold rounded-pill btn-sm">
-                                <i class="bi bi-person-plus me-1"></i>
-                                Thêm nhân viên
-                            </button>
-                        </form>
-                        
+
                     </div>
                 </div>
-            </div>
-        </section>
+        </div>
 
-        <!-- Filter + Table -->
-        <section class="container-fluid px-3 px-lg-4 mb-5">
-            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end flex-wrap gap-3 mb-3">
-                <div>
-                    <div class="section-head-title">Danh sách người dùng</div>
-                    <div class="section-head-desc">
-                        Họ tên, số điện thoại, vai trò, ...
-                    </div>
-                </div>
-
-                <div class="d-flex flex-wrap gap-2">
-                    <div class="input-group input-group-sm" style="width:220px;">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input
-                            type="text"
-                            class="form-control border-start-0"
-                            placeholder="Tìm theo tên / số ĐT..."
-                        >
-                    </div>
-
-                    <select class="form-select form-select-sm" style="width:auto;">
-                        <option selected>Tất cả vai trò</option>
-                        <option>Khách hàng</option>
-                        <option>Quản trị</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="table-responsive shadow-sm rounded-4 border bg-white">
-                <table class="table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Họ và tên</th>
-                            <th>Số điện thoại</th>
-                            <th class="text-end">Vai trò</th>
-                            <th class="text-end">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:choose>
-                            <c:when test="${not empty users}">
-                                <c:forEach var="user" items="${users}">
-                                    <tr>
-                                        <td>
-                                            <div class="fw-semibold" style="font-size:.9rem;">${user.username}</div>
-                                        </td>
-                                        <td>${user.fullName}</td>
-                                        <td>${user.phone}</td>
-                                        <td class="text-end">
-                                            <span class="user-status-active">${user.role.name}</span>
-                                        </td>
-                                        <td class="d-flex justify-content-end g-2">
-                                            <form action="/admin/users/view/${user.id}" method="get">
-                                                <button class="btn btn-sm btn-outline-primary rounded-pill fw-semibold">
-                                                    Xem hồ sơ
-                                                </button>
-                                            </form>
-                                            
-                                            <form action="/admin/users/edit/${user.id}" method="get">
-                                                <button class="btn btn-sm btn-outline-warning rounded-pill fw-semibold">
-                                                    Sửa hồ sơ
-                                                </button>
-                                            </form>
-                                            
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-danger rounded-pill fw-semibold"
-                                                onclick="confirmDelete('${user.id}')">
-                                                Xóa hồ sơ
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <tr class="text-muted text-center">
-                                    <td colspan="5" class="py-5 small">
-                                        <div class="mb-2">
-                                            <i class="bi bi-people fs-4"></i>
-                                        </div>
-                                
-                                        <div class="fw-semibold">Chưa có người dùng</div>
-                                    </td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
+ 
     </main>
 </div>
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title text-danger">Xác nhận xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                Bạn có chắc chắn muốn xóa hồ sơ này không?<br>
-                <span class="text-muted small">Hành động này không thể hoàn tác.</span>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-
-                <form id="deleteForm" method="post">
-                    <!-- action sẽ được thay động -->
-                    <button type="submit" class="btn btn-danger">Xóa</button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
 <!-- Bootstrap JS -->
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
-<script>
-function confirmDelete(userId) {
-    // Gán action động theo id
-    const form = document.getElementById("deleteForm");
-    form.action = "/admin/users/delete/" + userId;
-
-    // Mở modal
-    const modal = new bootstrap.Modal(document.getElementById("deleteModal"));
-    modal.show();
-}
-</script>
-
 </body>
 </html>
