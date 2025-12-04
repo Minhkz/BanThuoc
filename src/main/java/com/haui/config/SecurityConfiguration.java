@@ -57,34 +57,21 @@ public class SecurityConfiguration {
         }
 
         @Bean
-        SecurityFilterChain filterChain(HttpSecurity http,
-                        UserService userService,
-                        CustomUserDetailsService customUserDetailsService,
-                        CustomRememberMeSuccessHandler rememberMeSuccessHandler) throws Exception {
+        SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
                 http
                                 .authorizeHttpRequests(auth -> auth
-                                                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
+                                                .requestMatchers("/css/**", "/js/**", "/images/**", "/assets/**")
                                                 .permitAll()
-
-                                                .requestMatchers(
-                                                                "/client/**", "/css/**", "/js/**", "/images/**",
-                                                                "/assets/**", "/webjars/**")
-                                                .permitAll()
-
-                                                .requestMatchers("/", "/category/**", "/login/**", "/register/**",
-                                                                "/error", "/error/**")
-                                                .permitAll()
-
+                                                .requestMatchers("/", "/login/**", "/register/**").permitAll()
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
-
                                                 .anyRequest().authenticated())
 
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .loginProcessingUrl("/login")
-                                                .failureUrl("/login?error")
                                                 .successHandler(customSuccessHandler())
+                                                .failureUrl("/login?error")
                                                 .permitAll())
 
                                 .logout(logout -> logout
@@ -93,18 +80,13 @@ public class SecurityConfiguration {
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID"))
 
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                                                .invalidSessionUrl("/login?expired")
-                                                .maximumSessions(1)
-                                                .maxSessionsPreventsLogin(false))
-
                                 .rememberMe(rm -> rm
                                                 .rememberMeServices(rememberMeServices()))
 
-                                .csrf(csrf -> csrf
-                                                .ignoringRequestMatchers("/client/**", "/css/**", "/js/**",
-                                                                "/images/**", "/assets/**"));
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+
+                                .csrf(csrf -> csrf.disable());
 
                 return http.build();
         }

@@ -40,11 +40,11 @@
 
         <div>
             <div class="text-uppercase text-muted small fw-bold mb-2">Quản lý</div>
-            <a class="sidebar-link active" href="${pageContext.request.contextPath}/admin/products">
+            <a class="sidebar-link active" href="/admin/products">
                 <i class="bi bi-box-seam"></i> Sản phẩm
             </a>
             <a class="sidebar-link" href="#"><i class="bi bi-receipt"></i> Đơn hàng</a>
-            <a class="sidebar-link" href="#"><i class="bi bi-people"></i> Người dùng</a>
+            <a class="sidebar-link" href="/admin/users"><i class="bi bi-people"></i> Người dùng</a>
         </div>
 
         <div class="mt-auto pt-3">
@@ -104,9 +104,9 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center gap-3">
-                                        <img src="${pageContext.request.contextPath}/uploads/user/${p.image}"
-     class="product-row-img"
-     onerror="this.src='https://via.placeholder.com/48'">
+                                        <img src="/uploads/user/${p.image}"
+                                            class="product-row-img"
+                                            onerror="this.src='https://via.placeholder.com/48'">
                                         <div>
                                             <div class="prod-name">${p.name}</div>
                                             <div class="text-muted small">#${p.id}</div>
