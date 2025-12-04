@@ -39,9 +39,11 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/">Trang chủ</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/category">Danh mục</a>
                 </li>
