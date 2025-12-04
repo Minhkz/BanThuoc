@@ -41,14 +41,14 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
 
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/">Trang chủ</a>
+                    <a class="nav-link fw-semibold" href="/">Trang chủ</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/category">Danh mục</a>
+                    <a class="nav-link fw-semibold" href="/category">Danh mục</a>
                 </li>
                 <li class="nav-item ms-lg-2">
-                    <a class="btn btn-outline-primary rounded-pill position-relative" href="${pageContext.request.contextPath}/cart">
+                    <a class="btn btn-outline-primary rounded-pill position-relative" href="/cart">
                         <i class="bi bi-bag-check-fill me-1"></i>
                         Giỏ hàng
                         <span
@@ -56,7 +56,7 @@
                             class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
                             style="font-size:.7rem;min-width:1.5rem"
                         >
-                            <c:out value="${cartItemCount != null ? cartItemCount : 0}"/>
+                            ${sessionScope.sum}
                         </span>
                     </a>
                 </li>
@@ -96,7 +96,7 @@
             <div class="col-lg-8">
 
                 <!-- TRƯỜNG HỢP GIỎ RỖNG -->
-                <c:if test="${empty cartItems}">
+                <c:if test="${empty cartProducts}">
                     <div id="cart-empty">
                         <div class="empty-state-card">
                             <div class="display-6 mb-3 text-muted">
@@ -107,7 +107,7 @@
                                 Có vẻ bạn chưa thêm sản phẩm nào.
                                 Khám phá danh mục và chọn thuốc/phụ kiện sức khỏe bạn cần nhé.
                             </p>
-                            <a href="${pageContext.request.contextPath}/category"
+                            <a href="/category"
                                class="btn btn-primary rounded-pill fw-semibold px-3">
                                 <i class="bi bi-search-heart me-1"></i>
                                 Mua ngay
@@ -117,7 +117,7 @@
                 </c:if>
 
                 <!-- TRƯỜNG HỢP CÓ SẢN PHẨM -->
-                <c:if test="${not empty cartItems}">
+                <c:if test="${not empty cartProducts}">
                     <div id="cart-has-items">
                         <div class="table-responsive">
                             <table class="table align-middle cart-table">
@@ -131,13 +131,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach items="${cartItems}" var="item">
+                                <c:forEach items="${cartProducts}" var="item">
                                     <tr>
                                         <!-- SẢN PHẨM -->
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
                                                 <img
-                                                    src="${pageContext.request.contextPath}/uploads/user/${item.product.image}"
+                                                    src="/uploads/user/${item.product.image}"
                                                     alt="${item.product.name}"
                                                     class="rounded"
                                                     style="width:64px;height:64px;object-fit:cover"
@@ -173,10 +173,15 @@
 
                                         <!-- XÓA -->
                                         <td class="text-end">
-                                            <button class="btn btn-link text-danger p-0"
-                                                    onclick="removeFromCart('${item.product.id}')">
+                                            <form action="/cart/cancel" method="post">
+                                                <input type="number" name="id" value="${item.product.id}" class="d-none"/>
+                                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                                <button type="submit" class="btn btn-link text-danger p-0"
+                                                    >
                                                 <i class="bi bi-x-circle"></i>
-                                            </button>
+                                                </button>
+                                            </form>
+                                            
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -185,11 +190,15 @@
                         </div>
 
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3">
-                            <button class="btn btn-outline-danger btn-sm rounded-pill fw-semibold mb-2 mb-md-0"
-                                    onclick="clearCart()">
-                                <i class="bi bi-trash3 me-1"></i>
-                                Xóa toàn bộ giỏ
-                            </button>
+                            <form action="/cart/clear" method="post">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <button class="btn btn-outline-danger btn-sm rounded-pill fw-semibold mb-2 mb-md-0"
+                                    >
+                                    <i class="bi bi-trash3 me-1"></i>
+                                    Xóa toàn bộ giỏ
+                                </button>
+                            </form>
+                            
 
                             <a href="${pageContext.request.contextPath}/category"
                                class="btn btn-outline-primary btn-sm rounded-pill fw-semibold">
@@ -211,30 +220,25 @@
                     <div class="summary-line mb-2">
                         <span>Tạm tính</span>
                         <span id="subtotal-amount">
-                            <fmt:formatNumber
-                                    value="${subtotal != null ? subtotal : 0}"
-                                    type="number"
-                                    groupingUsed="true"/>₫
+                            <fmt:formatNumber value="${total}" type="number" maxFractionDigits="0" />₫
+                                    
                         </span>
                     </div>
 
                     <div class="summary-line mb-2">
                         <span>Phí vận chuyển</span>
                         <span id="shipping-amount">
-                            <fmt:formatNumber
-                                    value="${shipping != null ? shipping : 0}"
-                                    type="number"
-                                    groupingUsed="true"/>₫
+                            <fmt:formatNumber value="29000" type="number" maxFractionDigits="0" />₫
+                                    
                         </span>
                     </div>
 
                     <div class="summary-line mb-3">
                         <span>Mã giảm giá</span>
                         <span id="discount-amount">
-                            <fmt:formatNumber
-                                    value="${discount != null ? discount : 0}"
-                                    type="number"
-                                    groupingUsed="true"/>₫
+                            <fmt:formatNumber value="0" type="number" maxFractionDigits="0" />
+                                    
+₫
                         </span>
                     </div>
 
@@ -243,10 +247,9 @@
                     <div class="summary-total mb-3">
                         <span>Tổng thanh toán</span>
                         <span id="cart-total">
-                            <fmt:formatNumber
-                                    value="${total != null ? total : 0}"
-                                    type="number"
-                                    groupingUsed="true"/>₫
+                            <fmt:formatNumber value="${total + 29000}" type="number" maxFractionDigits="0" />
+                                    
+₫
                         </span>
                     </div>
 

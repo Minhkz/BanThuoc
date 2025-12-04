@@ -1,9 +1,15 @@
 package com.haui.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "carts")
+@Data
+@NoArgsConstructor
 public class Cart {
 
     @Id
@@ -14,37 +20,10 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    // cột `sum` trong DB – anh có thể dùng hoặc bỏ qua, tạm để Integer
     @Column(name = "`sum`")
     private Integer sum;
 
-    public Cart() {}
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartProduct> cartProduct;
 
-    public Cart(User user) {
-        this.user = user;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getSum() {
-        return sum;
-    }
-
-    public void setSum(Integer sum) {
-        this.sum = sum;
-    }
 }

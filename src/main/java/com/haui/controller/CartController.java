@@ -1,30 +1,36 @@
 package com.haui.controller;
 
+import com.haui.model.Cart;
 import com.haui.model.CartProduct;
+import com.haui.model.CartProductId;
+import com.haui.model.Product;
 import com.haui.model.User;
+import com.haui.repository.CartProductRepository;
 import com.haui.service.CartService;
+import com.haui.service.ProductService;
 import com.haui.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/cart")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
-    private final UserService userService; // cần để lấy User entity
-
-    public CartController(CartService cartService, UserService userService) {
-        this.cartService = cartService;
-        this.userService = userService;
-    }
+    private final UserService userService;
+    private final CartProductRepository cartProductRepository;
+    private final ProductService productService;
 
     private User getUserFromPrincipal(UserDetails principal) {
         User user = userService.findByEmail(principal.getUsername());
@@ -36,101 +42,117 @@ public class CartController {
     // GET /cart
     @GetMapping
     public String viewCart(@AuthenticationPrincipal UserDetails principal,
-            Model model) {
+            Model model,
+            HttpSession session) {
 
         if (principal == null) {
             return "redirect:/login";
         }
 
         User user = getUserFromPrincipal(principal);
+        Cart cart = user.getCart();
 
-        List<CartProduct> items = cartService.getCartItems(user);
-        double subtotal = cartService.calculateSubtotal(user);
-        double shipping = items.isEmpty() ? 0 : 15000;
-        double discount = 0;
-        double total = subtotal + shipping - discount;
+        List<CartProduct> cartProducts = cart.getCartProduct();
 
-        model.addAttribute("cartItems", items);
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("shipping", shipping);
-        model.addAttribute("discount", discount);
+        double total = cartProducts.stream()
+                .mapToDouble(CartProduct::getPrice)
+                .sum();
+
+        // Cập nhật session sum (số loại sản phẩm)
+        session.setAttribute("sum", cart.getSum());
+
+        model.addAttribute("cartProducts", cartProducts);
         model.addAttribute("total", total);
-        model.addAttribute("cartItemCount", cartService.countItems(user));
-
         return "client/cart";
     }
 
     // POST /cart/add
     @PostMapping("/add")
-    @ResponseBody
-    public Map<String, Object> addToCart(
-            @AuthenticationPrincipal UserDetails principal,
-            @RequestParam("productId") Integer productId,
-            @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity) {
-
-        Map<String, Object> res = new HashMap<>();
-
-        if (principal == null) {
-            res.put("success", false);
-            res.put("message", "Bạn cần đăng nhập để thêm vào giỏ hàng.");
-            return res;
-        }
+    @Transactional
+    public String addToCart(@AuthenticationPrincipal UserDetails principal,
+            @RequestParam("id") int idProduct,
+            HttpSession session) {
 
         User user = getUserFromPrincipal(principal);
+        Cart cart = cartService.geCartByUser(user);
 
-        try {
-            cartService.addItem(user, productId, quantity);
-            res.put("success", true);
-            res.put("cartCount", cartService.countItems(user));
-        } catch (Exception ex) {
-            res.put("success", false);
-            res.put("message", ex.getMessage());
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUser(user);
+            cart.setSum(0);
+            cart = cartService.savCart(cart);
         }
 
-        return res;
+        Product product = productService.getProductById(idProduct).orElse(null);
+        CartProduct cartProduct = cartProductRepository.findByCartAndProduct(cart, product);
+
+        if (cartProduct != null) {
+            // chỉ tăng quantity, sum không tăng
+            cartProduct.setQuantity(cartProduct.getQuantity() + 1);
+            cartProductRepository.save(cartProduct);
+        } else {
+            // thêm dòng mới -> sum + 1
+            cart.setSum(cart.getSum() + 1);
+
+            CartProduct newCP = new CartProduct(
+                    new CartProductId(cart.getId(), idProduct),
+                    cart,
+                    product,
+                    1,
+                    product.getPrice());
+            cartProductRepository.save(newCP);
+        }
+
+        cartService.savCart(cart);
+
+        // cập nhật session sum
+        session.setAttribute("sum", cart.getSum());
+
+        return "redirect:/cart";
     }
 
-    // POST /cart/remove
-    @PostMapping("/remove")
-    @ResponseBody
-    public Map<String, Object> removeFromCart(
+    @PostMapping("/cancel")
+    @Transactional
+    public String cancel(@RequestParam("id") int id,
             @AuthenticationPrincipal UserDetails principal,
-            @RequestParam("productId") Integer productId) {
-
-        Map<String, Object> res = new HashMap<>();
-
-        if (principal == null) {
-            res.put("success", false);
-            res.put("message", "Bạn cần đăng nhập.");
-            return res;
-        }
+            HttpSession session) {
 
         User user = getUserFromPrincipal(principal);
-        cartService.removeItem(user, productId);
+        Cart cart = user.getCart();
+        Product product = productService.getProductById(id).orElse(null);
 
-        res.put("success", true);
-        res.put("cartCount", cartService.countItems(user));
-        return res;
+        // xóa đúng sản phẩm trong giỏ của user
+        cartProductRepository.deleteByCartAndProduct(cart, product);
+
+        // giảm số loại sản phẩm
+        cart.setSum(cart.getSum() - 1);
+        cartService.savCart(cart);
+
+        // cập nhật session sum
+        session.setAttribute("sum", cart.getSum());
+
+        return "redirect:/cart";
     }
 
-    // POST /cart/clear
     @PostMapping("/clear")
-    @ResponseBody
-    public Map<String, Object> clearCart(@AuthenticationPrincipal UserDetails principal) {
-
-        Map<String, Object> res = new HashMap<>();
-
-        if (principal == null) {
-            res.put("success", false);
-            res.put("message", "Bạn cần đăng nhập.");
-            return res;
-        }
+    @Transactional
+    public String clearCart(@AuthenticationPrincipal UserDetails principal,
+            HttpSession session) {
 
         User user = getUserFromPrincipal(principal);
-        cartService.clearCart(user);
+        Cart cart = user.getCart();
 
-        res.put("success", true);
-        res.put("cartCount", 0);
-        return res;
+        // Xóa toàn bộ CartProduct của user
+        cartProductRepository.deleteByCart(cart);
+
+        // Reset số loại sản phẩm
+        cart.setSum(0);
+        cartService.savCart(cart);
+
+        // cập nhật session
+        session.setAttribute("sum", 0);
+
+        return "redirect:/cart";
     }
+
 }

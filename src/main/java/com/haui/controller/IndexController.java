@@ -1,5 +1,7 @@
 package com.haui.controller;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.haui.dto.user.UserDto;
+import com.haui.model.Product;
 import com.haui.model.Role;
 import com.haui.model.User;
 import com.haui.repository.RoleRepository;
+import com.haui.service.ProductService;
 import com.haui.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,9 +29,12 @@ public class IndexController {
     UserService userService;
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
+    ProductService productService;
 
     @GetMapping
-    public String index() {
+    public String index(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
         return "client/index";
     }
 
