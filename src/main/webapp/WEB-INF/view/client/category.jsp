@@ -232,11 +232,14 @@
                         <div class="product-badge bg-warning text-dark">NEW</div>
                     </c:if>
 
-                    <!-- IMAGE -->
-                    <img class="product-img"
-                         src="${pageContext.request.contextPath}/uploads/user/${p.image}"
-                         alt="${p.name}"
-                         onerror="this.src='https://via.placeholder.com/300x300?text=MediFresh';" />
+                   <!-- IMAGE -->
+<c:choose>
+    <c:when test="${not empty p.image}">
+        <img class="product-img"
+             src="${pageContext.request.contextPath}/uploads/product/${p.image}"
+             alt="${p.name}"
+             onerror="this.src='https://via.placeholder.com/300x300?text=MediFresh';" />
+    </c:when>
 
                     <div class="product-body">
                         <div class="product-name">
@@ -253,11 +256,16 @@
                             </div>
 
                             <button
-                                type="button"
-                                class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                                onclick="addToCart('${p.id}', '${fn:escapeXml(p.name)}', '${p.price}', '${pageContext.request.contextPath}/uploads/user/${p.image}')">
-                                <i class="bi bi-bag-plus"></i> Thêm
-                            </button>
+    type="button"
+    class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
+    onclick="addToCart(
+        '${p.id}',
+        '${fn:escapeXml(p.name)}',
+        '${p.price}',
+        '${pageContext.request.contextPath}/uploads/product/${p.image}'
+    )">
+    <i class="bi bi-bag-plus"></i> Thêm
+</button>
                         </div>
                     </div>
 

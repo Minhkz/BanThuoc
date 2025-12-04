@@ -13,8 +13,6 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-
-    // cột `sum` trong DB – anh có thể dùng hoặc bỏ qua, tạm để Integer
     @Column(name = "`sum`")
     private Integer sum;
 

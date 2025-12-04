@@ -3,9 +3,7 @@ package com.haui.controller;
 import com.haui.model.CartProduct;
 import com.haui.model.User;
 import com.haui.service.CartService;
-import com.haui.service.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,34 +17,27 @@ import java.util.Map;
 public class CartController {
 
     private final CartService cartService;
-    private final UserService userService; // cần để lấy User entity
 
-    public CartController(CartService cartService, UserService userService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
-        this.userService = userService;
     }
 
-    private User getUserFromPrincipal(UserDetails principal) {
-        User user = userService.findByEmail(principal.getUsername());
-        if (user == null)
-            return userService.getUserByUsername(principal.getUsername());
-        return user;
+    private User getCurrentUser(HttpSession session) {
+        return (User) session.getAttribute("currentUser");
     }
 
-    // GET /cart
+    // GET /cart -> trả về cart.jsp
     @GetMapping
-    public String viewCart(@AuthenticationPrincipal UserDetails principal,
-            Model model) {
-
-        if (principal == null) {
+    public String viewCart(HttpSession session, Model model) {
+        User user = getCurrentUser(session);
+        if (user == null) {
+            // chưa login thì bắt về trang đăng nhập (anh đổi URL tùy cấu hình)
             return "redirect:/login";
         }
 
-        User user = getUserFromPrincipal(principal);
-
         List<CartProduct> items = cartService.getCartItems(user);
         double subtotal = cartService.calculateSubtotal(user);
-        double shipping = items.isEmpty() ? 0 : 15000;
+        double shipping = items.isEmpty() ? 0 : 15000; // ví dụ
         double discount = 0;
         double total = subtotal + shipping - discount;
 
@@ -57,31 +48,28 @@ public class CartController {
         model.addAttribute("total", total);
         model.addAttribute("cartItemCount", cartService.countItems(user));
 
-        return "client/cart";
+        return "client/cart"; 
     }
-
-    // POST /cart/add
     @PostMapping("/add")
     @ResponseBody
-    public Map<String, Object> addToCart(
-            @AuthenticationPrincipal UserDetails principal,
-            @RequestParam("productId") Integer productId,
-            @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity) {
+    public Map<String, Object> addToCart(@RequestParam("productId") Integer productId,
+                                         @RequestParam(value = "quantity", required = false, defaultValue = "1") Integer quantity,
+                                         HttpSession session) {
 
         Map<String, Object> res = new HashMap<>();
+        User user = getCurrentUser(session);
 
-        if (principal == null) {
+        if (user == null) {
             res.put("success", false);
             res.put("message", "Bạn cần đăng nhập để thêm vào giỏ hàng.");
             return res;
         }
 
-        User user = getUserFromPrincipal(principal);
-
         try {
             cartService.addItem(user, productId, quantity);
+            int count = cartService.countItems(user);
             res.put("success", true);
-            res.put("cartCount", cartService.countItems(user));
+            res.put("cartCount", count);
         } catch (Exception ex) {
             res.put("success", false);
             res.put("message", ex.getMessage());
@@ -90,45 +78,40 @@ public class CartController {
         return res;
     }
 
-    // POST /cart/remove
+    // POST /cart/remove  (gọi từ cart.jsp: removeFromCart(productId))
     @PostMapping("/remove")
     @ResponseBody
-    public Map<String, Object> removeFromCart(
-            @AuthenticationPrincipal UserDetails principal,
-            @RequestParam("productId") Integer productId) {
-
+    public Map<String, Object> removeFromCart(@RequestParam("productId") Integer productId,
+                                              HttpSession session) {
         Map<String, Object> res = new HashMap<>();
+        User user = getCurrentUser(session);
 
-        if (principal == null) {
+        if (user == null) {
             res.put("success", false);
             res.put("message", "Bạn cần đăng nhập.");
             return res;
         }
 
-        User user = getUserFromPrincipal(principal);
         cartService.removeItem(user, productId);
-
         res.put("success", true);
         res.put("cartCount", cartService.countItems(user));
         return res;
     }
 
-    // POST /cart/clear
+    // POST /cart/clear  (gọi từ cart.jsp: clearCart())
     @PostMapping("/clear")
     @ResponseBody
-    public Map<String, Object> clearCart(@AuthenticationPrincipal UserDetails principal) {
-
+    public Map<String, Object> clearCart(HttpSession session) {
         Map<String, Object> res = new HashMap<>();
+        User user = getCurrentUser(session);
 
-        if (principal == null) {
+        if (user == null) {
             res.put("success", false);
             res.put("message", "Bạn cần đăng nhập.");
             return res;
         }
 
-        User user = getUserFromPrincipal(principal);
         cartService.clearCart(user);
-
         res.put("success", true);
         res.put("cartCount", 0);
         return res;
