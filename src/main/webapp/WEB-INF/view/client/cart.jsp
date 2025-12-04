@@ -47,12 +47,6 @@
                 <li class="nav-item">
                     <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/category">Danh mục</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/login">Đăng nhập</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold" href="${pageContext.request.contextPath}/register">Đăng ký</a>
-                </li>
                 <li class="nav-item ms-lg-2">
                     <a class="btn btn-outline-primary rounded-pill position-relative" href="${pageContext.request.contextPath}/cart">
                         <i class="bi bi-bag-check-fill me-1"></i>
