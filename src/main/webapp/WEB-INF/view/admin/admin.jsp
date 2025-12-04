@@ -217,11 +217,11 @@
 
         <div>
             <div class="sidebar-section-title">Quản lý</div>
-            <a class="sidebar-link active" href="admin-dashboard.html">
+            <a class="sidebar-link active" href="/admin">
                 <i class="bi bi-speedometer2"></i>
                 Dashboard
             </a>
-            <a class="sidebar-link" href="admin-products.html">
+            <a class="sidebar-link" href="/admin/products">
                 <i class="bi bi-box-seam"></i>
                 Sản phẩm
             </a>
