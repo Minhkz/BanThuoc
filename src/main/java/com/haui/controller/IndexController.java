@@ -31,16 +31,6 @@ public class IndexController {
         return "client/index";
     }
 
-    @GetMapping("/category")
-    public String category() {
-        return "client/category";
-    }
-
-    @GetMapping("/cart")
-    public String cart() {
-        return "client/cart";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "client/login";

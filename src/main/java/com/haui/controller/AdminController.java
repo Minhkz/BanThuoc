@@ -125,4 +125,5 @@ public class AdminController {
         model.addAttribute("user", user);
         return "admin/admin-users-view";
     }
+   
 }

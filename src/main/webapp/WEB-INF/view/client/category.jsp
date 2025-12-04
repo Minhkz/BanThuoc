@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -186,288 +188,84 @@
 <section class="container mt-4">
     <div class="section-title mb-3">
         <span>Kết quả sản phẩm</span>
-        <small id="result-count">0 sản phẩm</small>
+        <small id="result-count">
+            <c:choose>
+                <c:when test="${not empty products}">
+                    ${fn:length(products)} sản phẩm
+                </c:when>
+                <c:otherwise>0 sản phẩm</c:otherwise>
+            </c:choose>
+        </small>
     </div>
 
     <div id="productGrid" class="row g-4">
 
-        <!-- PRODUCT: Paracetamol -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="giam-dau"
-             data-name="Paracetamol 500mg Ha Sot Giam Dau">
-            <div class="product-card h-100">
-                <div class="product-badge">-20%</div>
-                <img class="product-img"
-                     src="./img/paracetamol.jpg"
-                     alt="Paracetamol 500mg">
+        <c:forEach items="${products}" var="p">
+            <%-- Xác định category ở view, không đụng DB --%>
+            <c:set var="cat" value="all" />
+            <c:if test="${fn:contains(p.name, 'Paracetamol')}">
+                <c:set var="cat" value="giam-dau" />
+            </c:if>
+            <c:if test="${fn:contains(p.name, 'Giảm đau')}">
+                <c:set var="cat" value="giam-dau" />
+            </c:if>
+            <c:if test="${fn:contains(p.name, 'Vitamin')}">
+                <c:set var="cat" value="vitamin" />
+            </c:if>
+            <c:if test="${fn:contains(p.name, 'Ho') || fn:contains(p.name, 'Siro')}">
+                <c:set var="cat" value="ho-hen" />
+            </c:if>
+            <c:if test="${fn:contains(p.name, 'Khẩu trang') || fn:contains(p.name, 'Gel')}">
+                <c:set var="cat" value="bao-ho" />
+            </c:if>
 
-                <div class="product-body">
-                    <div class="product-name">
-                        Paracetamol 500mg (Hạ sốt, giảm đau)
-                    </div>
-                    <div class="product-desc mb-2">
-                        Dùng khi đau đầu, sốt nhẹ. Phù hợp người lớn.
-                    </div>
+            <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
+                 data-category="${cat}"
+                 data-name="${p.name}">
+                <div class="product-card h-100">
 
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            25.000₫
-                            <span class="old-price">32.000₫</span>
+                    <!-- BADGE -->
+                    <c:if test="${p.isHot}">
+                        <div class="product-badge bg-success">HOT</div>
+                    </c:if>
+                    <c:if test="${p.isNew}">
+                        <div class="product-badge bg-warning text-dark">NEW</div>
+                    </c:if>
+
+                    <!-- IMAGE -->
+                    <img class="product-img"
+                         src="${pageContext.request.contextPath}/uploads/user/${p.image}"
+                         alt="${p.name}"
+                         onerror="this.src='https://via.placeholder.com/300x300?text=MediFresh';" />
+
+                    <div class="product-body">
+                        <div class="product-name">
+                            ${p.name}
                         </div>
 
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P001', 'Paracetamol 500mg', 25000, 'https://images.unsplash.com/photo-1584305574644-0d62611b5c44?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT: Vitamin C -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="vitamin"
-             data-name="Vitamin C 1000mg Tang De Khang">
-            <div class="product-card h-100">
-                <div class="product-badge bg-success" style="box-shadow:0 .5rem 1rem rgba(25,135,84,.4)">HOT</div>
-                <img class="product-img"
-                     src="./img/vitC.webp"
-                     alt="Vitamin C 1000mg">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Vitamin C 1000mg tăng đề kháng
-                    </div>
-                    <div class="product-desc mb-2">
-                        Hỗ trợ miễn dịch, giảm mệt mỏi, đẹp da.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            89.000₫
+                        <div class="product-desc mb-2">
+                            ${p.shortDesc}
                         </div>
 
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P002', 'Vitamin C 1000mg', 89000, 'https://images.unsplash.com/photo-1604582728858-027c23661db2?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap">
+                            <div class="price-row">
+                                <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="₫"/>
+                            </div>
 
-        <!-- PRODUCT: Siro ho -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="ho-hen"
-             data-name="Siro Ho Thao Duoc Giam Ho Khan">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/thuoc ho.webp"
-                     alt="Siro ho thảo dược">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Si-rô ho thảo dược cho người lớn
-                    </div>
-                    <div class="product-desc mb-2">
-                        Giảm ho khan, dịu cổ họng, dễ ngủ hơn.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            59.000₫
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
+                                onclick="addToCart('${p.id}', '${fn:escapeXml(p.name)}', '${p.price}', '${pageContext.request.contextPath}/uploads/user/${p.image}')">
+                                <i class="bi bi-bag-plus"></i> Thêm
+                            </button>
                         </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P003', 'Siro ho thảo dược', 59000, 'https://images.unsplash.com/photo-1599058918144-bf6a4f4377b3?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
                     </div>
+
                 </div>
             </div>
-        </div>
+        </c:forEach>
 
-        <!-- PRODUCT: Khẩu trang -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="bao-ho"
-             data-name="Khau Trang Y Te 4 Lop Hop 50 Cai">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/khau trang.webp"
-                     alt="Khẩu trang y tế 4 lớp">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Khẩu trang y tế 4 lớp (Hộp 50 cái)
-                    </div>
-                    <div class="product-desc mb-2">
-                        Lọc bụi mịn, giọt bắn. Phù hợp đi làm, đi học.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            42.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P004', 'Khẩu trang 4 lớp (50 cái)', 42000, 'https://images.unsplash.com/photo-1587854692152-326f72a5c28b?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT: Vitamin tổng hợp -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="vitamin"
-             data-name="Multivitamin Tong Hop Bo Sung Khoang Chat">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/vitTonghop.webp"
-                     alt="Multivitamin tổng hợp">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Multivitamin tổng hợp hằng ngày
-                    </div>
-                    <div class="product-desc mb-2">
-                        Bổ sung vitamin & khoáng chất cơ bản cho cơ thể.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            120.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P005', 'Multivitamin tổng hợp', 120000, 'https://images.unsplash.com/photo-1584305574760-9fed4adb4a21?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT: Gel rửa tay kháng khuẩn -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="bao-ho"
-             data-name="Gel Rua Tay Khang Khuan Khong Can Nuoc">
-            <div class="product-card h-100">
-                <div class="product-badge bg-warning text-dark" style="box-shadow:0 .5rem 1rem rgba(255,193,7,.4)">NEW</div>
-                <img class="product-img"
-                     src="./img/gel.webp"
-                     alt="Gel rửa tay kháng khuẩn">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Gel rửa tay kháng khuẩn (không cần nước)
-                    </div>
-                    <div class="product-desc mb-2">
-                        Sạch tay nhanh khi đi đường / nơi công cộng.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            35.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P006', 'Gel rửa tay kháng khuẩn', 35000, 'https://images.unsplash.com/photo-1583947581924-860bdaedbba6?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT: Thuốc ngậm ho -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="ho-hen"
-             data-name="Vien Ngam Giam Ho Du An Hong">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/ngamho.webp"
-                     alt="Viên ngậm giảm ho dịu họng">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Viên ngậm giảm ho dịu họng
-                    </div>
-                    <div class="product-desc mb-2">
-                        Dễ mang theo, giảm rát cổ, thơm bạc hà nhẹ.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            29.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P007', 'Viên ngậm giảm ho', 29000, 'https://images.unsplash.com/photo-1588776814546-1f4240c8a138?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT: Thuốc giảm đau cơ-xương -->
-        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-             data-category="giam-dau"
-             data-name="Thuoc Giam Dau Co Xuong Vai Gay Lieu Vua">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/thuoc dau.jpg"
-                     alt="Giảm đau cơ-xương khớp">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Thuốc giảm đau cơ - vai - gáy liều vừa
-                    </div>
-                    <div class="product-desc mb-2">
-                        Hỗ trợ giảm đau cơ bắp sau vận động mạnh.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            75.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P008', 'Thuốc giảm đau cơ vai gáy', 75000, 'https://images.unsplash.com/photo-1579165466741-7f35e4755592?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /row -->
+    </div>
 </section>
 
 <!-- FOOTER -->
@@ -487,6 +285,61 @@
 </script>
 
 <script src="${env}/client/js/categories.js"></script>
+
+<!-- JS tự xử lý filter + addToCart để chắc chắn chạy -->
+<script>
+    let currentCategory = 'all';
+
+    function selectCategory(btn) {
+        currentCategory = btn.getAttribute('data-cat');
+
+        document.querySelectorAll('.category-pill').forEach(b => {
+            b.classList.remove('active');
+        });
+        btn.classList.add('active');
+
+        applyFilter();
+    }
+
+    function applyFilter() {
+        const input = document.getElementById('searchInput');
+        const keyword = input ? input.value.toLowerCase() : '';
+
+        const cards = document.querySelectorAll('.product-card-wrapper');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const name = (card.getAttribute('data-name') || '').toLowerCase();
+            const cat = card.getAttribute('data-category') || 'all';
+
+            const matchCat = (currentCategory === 'all' || cat === currentCategory);
+            const matchName = (!keyword || name.includes(keyword));
+
+            if (matchCat && matchName) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const resultCount = document.getElementById('result-count');
+        if (resultCount) {
+            resultCount.textContent = visibleCount + ' sản phẩm';
+        }
+    }
+
+    // Khởi tạo filter lần đầu
+    document.addEventListener('DOMContentLoaded', function () {
+        applyFilter();
+    });
+
+    // Hàm thêm vào giỏ hàng – có thể chỉnh lại URL nếu controller khác
+    function addToCart(id, name, price, imageUrl) {
+        // Cách đơn giản: redirect sang controller xử lý thêm giỏ
+        window.location.href = '${pageContext.request.contextPath}/cart/add?productId=' + encodeURIComponent(id);
+    }
+</script>
 
 </body>
 </html>
