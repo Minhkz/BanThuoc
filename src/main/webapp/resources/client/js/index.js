@@ -1,48 +1,4 @@
-function getCart() {
-        try {
-            return JSON.parse(localStorage.getItem('cartItems')) || [];
-        } catch (e) {
-            return [];
-        }
-    }
 
-    function saveCart(cart) {
-        localStorage.setItem('cartItems', JSON.stringify(cart));
-    }
-
-    function renderCartCount() {
-        const badge = document.getElementById('cart-count');
-        if (!badge) return;
-        const cart = getCart();
-        const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-        badge.textContent = totalQty;
-    }
-
-    function addToCart(id, name, price, imgUrl) {
-        let cart = getCart();
-        const idx = cart.findIndex(p => p.id === id);
-
-        if (idx >= 0) {
-            cart[idx].qty += 1;
-        } else {
-            cart.push({
-                id,
-                name,
-                price,
-                imgUrl,
-                qty: 1
-            });
-        }
-
-        saveCart(cart);
-        renderCartCount();
-
-        alert('Đã thêm "' + name + '" vào giỏ hàng!');
-    }
-
-    // =========================
-    // QUICK CONSULT LOGIC
-    // =========================
     function handleConsult(e) {
         e.preventDefault();
 

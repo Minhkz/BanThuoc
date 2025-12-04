@@ -54,7 +54,7 @@
                             Giỏ hàng
                             <span id="cart-count"
                                 class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
-                                style="font-size:.7rem;min-width:1.5rem">0</span>
+                                style="font-size:.7rem;min-width:1.5rem">${sessionScope.sum}</span>
                         </a>
                     </li>
                 </c:if>
@@ -220,144 +220,47 @@
 
 <!-- ========== SẢN PHẨM NỔI BẬT ========== -->
 <section class="container mt-5">
-    <div class="section-title mb-3">
-        <span>Sản phẩm nổi bật</span>
-        <small>Xem tất cả ›</small>
-    </div>
-
-    <div class="row g-4">
-        <!-- product 1 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="product-card h-100">
-                <div class="product-badge">-20%</div>
-                <img class="product-img"
-                     src="./img/paracetamol.jpg"
+   <div class="section-title mb-3">
+      <span>Sản phẩm nổi bật</span>
+      <small>Xem tất cả ›</small>
+   </div>
+   <div class="row g-4">
+      <c:forEach items="${products}" var="product">
+         <div class="col-12 col-sm-6 col-lg-3">
+            <form action="/cart/add" method="post">
+               <div class="product-card h-100">
+               <div class="d-none"><input type="number" name="id" value="${product.id}"></div>
+                  <div class="product-badge">-20%</div>
+                  <img class="product-img"
+                     src="/uploads/user/${product.image}"
                      alt="Paracetamol 500mg">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Paracetamol 500mg (Hạ sốt, giảm đau)
-                    </div>
-                    <div class="product-desc mb-2">
-                        Dùng khi đau đầu, sốt nhẹ. Phù hợp người lớn.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+                  <div class="product-body">
+                     <div class="product-name">
+                        ${product.name}
+                     </div>
+                     <div class="product-desc mb-2">
+                        ${product.shortDesc}
+                     </div>
+                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <div class="price-row">
-                            25.000₫
-                            <span class="old-price">32.000₫</span>
+                           25.000₫
+                           <span class="old-price">${product.price}₫</span>
                         </div>
-
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                         <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P001', 'Paracetamol 500mg', 25000, 'https://images.unsplash.com/photo-1584305574644-0d62611b5c44?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
+                           type="submit"
+                           class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0">
+                        <i class="bi bi-bag-plus"></i>
+                        Thêm
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- product 2 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="product-card h-100">
-                <div class="product-badge bg-success" style="box-shadow:0 .5rem 1rem rgba(25,135,84,.4)">HOT</div>
-                <img class="product-img"
-                     src="./img/vitC.webp"
-                     alt="Vitamin C 1000mg">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Vitamin C 1000mg tăng đề kháng
-                    </div>
-                    <div class="product-desc mb-2">
-                        Hỗ trợ miễn dịch, giảm mệt mỏi, đẹp da.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            89.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P002', 'Vitamin C 1000mg', 89000, 'https://images.unsplash.com/photo-1604582728858-027c23661db2?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- product 3 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/thuoc ho.webp"
-                     alt="Siro ho thảo dược">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Si-rô ho thảo dược cho người lớn
-                    </div>
-                    <div class="product-desc mb-2">
-                        Giảm ho khan, dịu cổ họng, dễ ngủ hơn.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            59.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P003', 'Siro ho thảo dược', 59000, 'https://images.unsplash.com/photo-1599058918144-bf6a4f4377b3?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- product 4 -->
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="product-card h-100">
-                <img class="product-img"
-                     src="./img/khau trang.webp"
-                     alt="Khẩu trang y tế 4 lớp">
-
-                <div class="product-body">
-                    <div class="product-name">
-                        Khẩu trang y tế 4 lớp (Hộp 50 cái)
-                    </div>
-                    <div class="product-desc mb-2">
-                        Lọc bụi mịn, giọt bắn. Phù hợp đi làm, đi học.
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap">
-                        <div class="price-row">
-                            42.000₫
-                        </div>
-
-                        <button
-                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-                            onclick="addToCart('P004', 'Khẩu trang 4 lớp (50 cái)', 42000, 'https://images.unsplash.com/photo-1587854692152-326f72a5c28b?auto=format&fit=crop&w=600&q=60')"
-                        >
-                            <i class="bi bi-bag-plus"></i>
-                            Thêm
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- row -->
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+      </c:forEach>
+   </div>
+   <!-- row -->
 </section>
 
 <!-- ========== CTA SỨC KHỎE / CẢNH BÁO ========== -->

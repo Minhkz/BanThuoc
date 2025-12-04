@@ -57,7 +57,7 @@
                             Giỏ hàng
                             <span id="cart-count"
                                 class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill"
-                                style="font-size:.7rem;min-width:1.5rem">0</span>
+                                style="font-size:.7rem;min-width:1.5rem">${sessionScope.sum}</span>
                         </a>
                     </li>
                 </c:if>
@@ -193,88 +193,101 @@
                 <c:when test="${not empty products}">
                     ${fn:length(products)} sản phẩm
                 </c:when>
-                <c:otherwise>0 sản phẩm</c:otherwise>
+                <c:otherwise>
+                    0 sản phẩm
+                </c:otherwise>
             </c:choose>
         </small>
     </div>
 
     <div id="productGrid" class="row g-4">
 
-        <c:forEach items="${products}" var="p">
-            <%-- Xác định category ở view, không đụng DB --%>
-            <c:set var="cat" value="all" />
-            <c:if test="${fn:contains(p.name, 'Paracetamol')}">
-                <c:set var="cat" value="giam-dau" />
-            </c:if>
-            <c:if test="${fn:contains(p.name, 'Giảm đau')}">
-                <c:set var="cat" value="giam-dau" />
-            </c:if>
-            <c:if test="${fn:contains(p.name, 'Vitamin')}">
-                <c:set var="cat" value="vitamin" />
-            </c:if>
-            <c:if test="${fn:contains(p.name, 'Ho') || fn:contains(p.name, 'Siro')}">
-                <c:set var="cat" value="ho-hen" />
-            </c:if>
-            <c:if test="${fn:contains(p.name, 'Khẩu trang') || fn:contains(p.name, 'Gel')}">
-                <c:set var="cat" value="bao-ho" />
-            </c:if>
+    <c:forEach items="${products}" var="p">
 
-            <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
-                 data-category="${cat}"
-                 data-name="${p.name}">
-                <div class="product-card h-100">
+        <!-- Xác định category ở view -->
+        <c:set var="cat" value="all" />
+        <c:if test="${fn:contains(p.name, 'Paracetamol')}">
+            <c:set var="cat" value="giam-dau" />
+        </c:if>
+        <c:if test="${fn:contains(p.name, 'Giảm đau')}">
+            <c:set var="cat" value="giam-dau" />
+        </c:if>
+        <c:if test="${fn:contains(p.name, 'Vitamin')}">
+            <c:set var="cat" value="vitamin" />
+        </c:if>
+        <c:if test="${fn:contains(p.name, 'Ho') || fn:contains(p.name, 'Siro')}">
+            <c:set var="cat" value="ho-hen" />
+        </c:if>
+        <c:if test="${fn:contains(p.name, 'Khẩu trang') || fn:contains(p.name, 'Gel')}">
+            <c:set var="cat" value="bao-ho" />
+        </c:if>
 
-                    <!-- BADGE -->
-                    <c:if test="${p.isHot}">
-                        <div class="product-badge bg-success">HOT</div>
-                    </c:if>
-                    <c:if test="${p.isNew}">
-                        <div class="product-badge bg-warning text-dark">NEW</div>
-                    </c:if>
+        <div class="col-12 col-sm-6 col-lg-3 product-card-wrapper"
+             data-category="${cat}"
+             data-name="${p.name}">
 
-                   <!-- IMAGE -->
-<c:choose>
-    <c:when test="${not empty p.image}">
-        <img class="product-img"
-             src="${pageContext.request.contextPath}/uploads/product/${p.image}"
-             alt="${p.name}"
-             onerror="this.src='https://via.placeholder.com/300x300?text=MediFresh';" />
-    </c:when>
+            <div class="product-card h-100">
 
-                    <div class="product-body">
-                        <div class="product-name">
-                            ${p.name}
+                <!-- BADGES -->
+                <c:if test="${p.isHot}">
+                    <div class="product-badge bg-success">HOT</div>
+                </c:if>
+                <c:if test="${p.isNew}">
+                    <div class="product-badge bg-warning text-dark">NEW</div>
+                </c:if>
+
+                <!-- IMAGE -->
+                <c:choose>
+                    <c:when test="${not empty p.image}">
+                        <img class="product-img"
+                             src="/uploads/user/${p.image}"
+                             alt="${p.name}"
+                             onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/client/images/no-image.png';" />
+                    </c:when>
+
+                    <c:otherwise>
+                        <img class="product-img"
+                             src="${pageContext.request.contextPath}/client/images/no-image.png"
+                             alt="${p.name}" />
+                    </c:otherwise>
+                </c:choose>
+
+                <!-- BODY -->
+                <div class="product-body">
+                    <div class="product-name">${p.name}</div>
+
+                    <div class="product-desc mb-2">${p.shortDesc}</div>
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap">
+
+                        <div class="price-row">
+                            <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="₫"/>
                         </div>
 
-                        <div class="product-desc mb-2">
-                            ${p.shortDesc}
-                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
+                            onclick="addToCart(
+                                '${p.id}',
+                                '${fn:escapeXml(p.name)}',
+                                '${p.price}',
+                                '${pageContext.request.contextPath}/uploads/product/${p.image}'
+                            )">
+                            <i class="bi bi-bag-plus"></i> Thêm
+                        </button>
 
-                        <div class="d-flex align-items-center justify-content-between flex-wrap">
-                            <div class="price-row">
-                                <fmt:formatNumber value="${p.price}" type="currency" currencySymbol="₫"/>
-                            </div>
-
-                            <button
-    type="button"
-    class="btn btn-primary btn-sm btn-add-cart mt-2 mt-sm-0"
-    onclick="addToCart(
-        '${p.id}',
-        '${fn:escapeXml(p.name)}',
-        '${p.price}',
-        '${pageContext.request.contextPath}/uploads/product/${p.image}'
-    )">
-    <i class="bi bi-bag-plus"></i> Thêm
-</button>
-                        </div>
                     </div>
-
                 </div>
-            </div>
-        </c:forEach>
 
-    </div>
+            </div>
+        </div>
+
+    </c:forEach>
+
+</div>
+
 </section>
+
 
 <!-- FOOTER -->
 <footer class="site-footer text-center">

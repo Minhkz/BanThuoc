@@ -1,9 +1,11 @@
 package com.haui.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "cart_product")
+@AllArgsConstructor
 public class CartProduct {
 
     @EmbeddedId
@@ -25,7 +27,8 @@ public class CartProduct {
     @Column(name = "price")
     private Double price; // giá tại thời điểm bỏ vào giỏ
 
-    public CartProduct() {}
+    public CartProduct() {
+    }
 
     public CartProduct(Cart cart, Product product, Integer quantity, Double price) {
         this.cart = cart;

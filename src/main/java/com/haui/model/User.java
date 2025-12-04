@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -61,10 +62,14 @@ public class User {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
     @PrePersist
     private void defaults() {
         if (createdDate == null) {
             createdDate = LocalDateTime.now();
         }
     }
+
 }
